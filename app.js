@@ -4,13 +4,13 @@ const http = require('http');
 const port = process.env.port;
 const hostname = process.env.hostname;
 
-const header = require('./modules/Header');
-const nav = require('./modules/Nav');
-const footer = require('./modules/Footer');
+const header = require('./lib/Header');
+const nav = require('./lib/Nav');
+const footer = require('./lib/Footer');
 
-const accueil = require('./modules/Accueil');
-const calculIMC = require('./modules/CalculIMC');
-const convertisseurDevise = require('./modules/ConvertisseurDevise');
+const accueil = require('./lib/Accueil');
+const calculIMC = require('./lib/CalculIMC');
+const convertisseurDevise = require('./lib/ConvertisseurDevise');
 
 const server = http.createServer((req, res) => {
   res.statusCode = 200;
