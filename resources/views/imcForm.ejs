@@ -1,0 +1,22 @@
+<div class="container">
+    <div>
+      <h1>IMC</h1>
+      <form action="/calculIMC" method="POST">
+          <legend>Calculer votre IMC en complétant le formulaire ci-dessous :</legend>
+          <div class="mb-3">
+            <label for="fullname" class="form-label">Nom :</label>
+            <input type="text" id="fullname" name="fullname" class="form-control" placeholder="John Doe" required>
+          </div>
+          <div class="mb-3">
+            <label for="height" class="form-label">Taille (en cm) :</label>
+            <input type="number" id="height" name="height" class="form-control" placeholder="180" required>
+          </div>
+          <div class="mb-3">
+            <label for="weight" class="form-label">Poids (en kg) :</label>
+            <input type="number" id="weight" name="weight" class="form-control" placeholder="80" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </fieldset>
+      </form>
+    </div>
+</div>

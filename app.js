@@ -24,31 +24,24 @@ async function parseBody(body) {
 }
 
 async function handleHTTPRequest(req, res, body = undefined) {
-  let mainContent = '';
+  let htmlContent = '';
   let parsedBody = await parseBody(body);
 
   if (req.url === '/calculIMC') {
     const calculIMC = require('./lib/CalculIMC').calculIMC;
-    mainContent = await calculIMC.render(req, parsedBody);
+    htmlContent = await calculIMC.render(req, parsedBody);
   } else {
     const accueil = require('./lib/Accueil');
-    mainContent = accueil.view;
+    htmlContent = await accueil.view;
   }
 
-  sendResponse(res, mainContent);
+  sendResponse(res, htmlContent);
 }
 
-async function sendResponse(res, mainContent) {
-  const header = require('./lib/Header');
-  const nav = require('./lib/Nav');
-  const footer = require('./lib/Footer');
-
+async function sendResponse(res, htmlContent) {
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/html');
-  res.write(header.view);
-  res.write(nav.view);
-  res.write(mainContent);
-  res.write(footer.view);
+  res.write(htmlContent);
   res.end();
 }
 
