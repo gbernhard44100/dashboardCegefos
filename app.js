@@ -1,21 +1,38 @@
 require('dotenv').config();
 const http = require('http');
-const { resolve } = require('path');
 
 const port = process.env.port;
 const hostname = process.env.hostname;
 
 const convertisseurDevise = require('./lib/ConvertisseurDevise');
 
-async function handleHTTPRequest(req, res, body = '') {
-  var mainContent = '';
+async function parseBody(body) {
+  return new Promise((resolve) => {
+    resolve(JSON.parse(body));
+  }).catch(() => {
+    // body request in from html form: "fullname=gg&height=180&weight=80"
+    let parsedBody = {};
+    if (body !== undefined) {
+      String(body).split('&').map((data) => {
+        let splittedData = data.split('=');
+        parsedBody[splittedData[0]] = splittedData[1]
+      });
+    }
+
+    return parsedBody;
+  });
+}
+
+async function handleHTTPRequest(req, res, body = undefined) {
+  let mainContent = '';
+  let parsedBody = await parseBody(body);
 
   if (req.url === '/calculIMC') {
     const calculIMC = require('./lib/CalculIMC').calculIMC;
-    var mainContent = await calculIMC.render(req);
+    mainContent = await calculIMC.render(req, parsedBody);
   } else {
     const accueil = require('./lib/Accueil');
-    var mainContent = accueil.view;
+    mainContent = accueil.view;
   }
 
   sendResponse(res, mainContent);
