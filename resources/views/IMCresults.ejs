@@ -2,4 +2,21 @@
 
 <%- include('imcForm', {parsedBody: parsedBody}) -%>
 
+<hr>
+<div class="container">
+    <div class="row">
+        <h1>Résultats:</h1>
+    </div>
+    <div class="row">
+        <div class="col">
+            <p>Bonjour <%= parsedBody.fullname -%>,</p>
+            <p>Votre IMC (indice de masse corporelle) est exactement : <%= imc -%></p>
+            <p>Vous êtes <%= fatnessData.frenchDescription -%>.</p>
+        </div>
+        <div class="col">
+          <img src="<%= fatnessData.avatarPath -%>" alt="<%= fatnessData.size -%>"/>
+        </div>
+    </div>
+</div>
+
 <%- include('footer') -%>

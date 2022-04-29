@@ -1,5 +1,6 @@
 require('dotenv').config();
 const http = require('http');
+const fs = require('fs');
 
 const port = process.env.port;
 const hostname = process.env.hostname;
@@ -45,13 +46,40 @@ async function sendResponse(res, htmlContent) {
   res.end();
 }
 
+function isFile(req) {
+  return req.url.split('.').length > 1;
+}
+
+function getFileType(req) {
+  let fileType = '';
+  let extension = req.url.split('.')[1];
+  if (['jpg', 'png'].find(value => value === extension.toLowerCase())) {
+    fileType = 'image/' + extension;
+  }
+
+  return fileType;
+}
+
+async function loadFile(req, res, statusCode) {
+  fs.readFile('.' + req.url, function(err, data) {
+    if(err) {
+      console.log(err);
+        res.writeHead(500, { 'Content-Type' : 'text/plain' });
+        res.end('500 - Internal Error');
+    } else {
+        res.writeHead(statusCode, { 'Content-Type' : getFileType(req) });
+        res.end(data);
+    }
+  });
+}
+
 const server = http.createServer((req, res) => {
-  if(req.url === '/favicon.png') {
-    res.statusCode = 204;
-    res.end();
+  if(req.url === '/favicon.ico') {
+    loadFile(req, res, 204);
+  } else if(isFile(req)) {
+    loadFile(req, res, 200);
   } else {
     var body = '';
-    
     req.on('readable', function() {
       if (req.method === 'GET') {
         handleHTTPRequest(req, res);
