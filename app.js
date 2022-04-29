@@ -77,7 +77,12 @@ const server = http.createServer((req, res) => {
   if(req.url === '/favicon.ico') {
     loadFile(req, res, 204);
   } else if(isFile(req)) {
-    loadFile(req, res, 200);
+    if (req.url.includes('/resources/public')) {
+      loadFile(req, res, 200);
+    } else {
+      res.writeHead(403, { 'Content-Type' : 'text/plain' });
+      res.end('403 - Forbiden');
+    }
   } else {
     var body = '';
     req.on('readable', function() {
