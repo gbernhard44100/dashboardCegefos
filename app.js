@@ -8,7 +8,6 @@ const hostname = process.env.hostname;
 const convertisseurDevise = require('./lib/ConvertisseurDevise');
 
 async function parseBody(body) {
-  console.log(String(body));
   return new Promise((resolve) => {
     resolve(JSON.parse(body));
   }).catch(() => {
@@ -28,7 +27,7 @@ async function parseBody(body) {
 async function handleHTTPRequest(req, res, body = undefined) {
   let htmlContent = '';
   let parsedBody = await parseBody(body);
-  console.log(parsedBody);
+
   if (req.url === '/calculIMC') {
     const calculIMC = require('./lib/CalculIMC').calculIMC;
     htmlContent = await calculIMC.render(req, parsedBody);
@@ -64,7 +63,6 @@ function getFileType(req) {
 async function loadFile(req, res, statusCode) {
   fs.readFile('.' + req.url, function(err, data) {
     if(err) {
-      console.log(err);
         res.writeHead(500, { 'Content-Type' : 'text/plain' });
         res.end('500 - Internal Error');
     } else {
