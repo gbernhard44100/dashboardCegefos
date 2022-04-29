@@ -8,6 +8,7 @@ const hostname = process.env.hostname;
 const convertisseurDevise = require('./lib/ConvertisseurDevise');
 
 async function parseBody(body) {
+  console.log(String(body));
   return new Promise((resolve) => {
     resolve(JSON.parse(body));
   }).catch(() => {
@@ -16,7 +17,7 @@ async function parseBody(body) {
     if (body !== undefined) {
       String(body).split('&').map((data) => {
         let splittedData = data.split('=');
-        parsedBody[splittedData[0]] = splittedData[1]
+        parsedBody[splittedData[0]] = splittedData[1].replace('+', ' ');
       });
     }
 
@@ -27,7 +28,7 @@ async function parseBody(body) {
 async function handleHTTPRequest(req, res, body = undefined) {
   let htmlContent = '';
   let parsedBody = await parseBody(body);
-
+  console.log(parsedBody);
   if (req.url === '/calculIMC') {
     const calculIMC = require('./lib/CalculIMC').calculIMC;
     htmlContent = await calculIMC.render(req, parsedBody);
