@@ -5,8 +5,6 @@ const fs = require('fs');
 const port = process.env.port;
 const hostname = process.env.hostname;
 
-const convertisseurDevise = require('./lib/ConvertisseurDevise');
-
 async function parseBody(body) {
   return new Promise((resolve) => {
     resolve(JSON.parse(body));
@@ -31,6 +29,9 @@ async function handleHTTPRequest(req, res, body = undefined) {
   if (req.url === '/calculIMC') {
     const calculIMC = require('./lib/CalculIMC').calculIMC;
     htmlContent = await calculIMC.render(req, parsedBody);
+  } else if (req.url === '/convertirDevises') {
+    const convertisseurDevise = require('./lib/ConvertisseurDevise').convertisseurDevise;
+    htmlContent = await convertisseurDevise.render(req, parsedBody);
   } else {
     const accueil = require('./lib/Accueil');
     htmlContent = await accueil.view;

@@ -1,0 +1,37 @@
+<%- include('header') -%>
+
+<div class="container">
+    <div>
+      <h1>Convertisseur de devises</h1>
+      <form action="/convertirDevises" method="POST">
+          <div class="mb-3">
+            <label for="usdAmount" class="form-label">Somme en &dollar; :</label>
+            <input type="number" step=".01" id="usdAmount" name="usdAmount" class="form-control" placeholder="0" 
+              <% if(parsedBody.usdAmount) { %>
+                value="<%= parsedBody.usdAmount %>"
+              <% } %>
+            >
+          </div>
+          <div class="mb-3">
+            <label for="euroAmount" class="form-label">Somme en &euro; :</label>
+            <input type="number" step=".01" id="euroAmount" name="euroAmount" class="form-control" placeholder="0" 
+              <% if(parsedBody.euroAmount) { %>
+                value="<%= parsedBody.euroAmount %>"
+              <% } %>
+            >
+          </div>
+          <div class="mb-3">
+            <label for="yenAmount" class="form-label">Somme en &yen; :</label>
+            <input type="number" id="yenAmount" name="yenAmount" class="form-control" placeholder="0" 
+              <% if(parsedBody.yenAmount) { %>
+                value="<%= parsedBody.yenAmount %>"
+              <% } %>
+            >
+          </div>
+          <button type="submit" class="btn btn-primary">Convertir</button>
+        </fieldset>
+      </form>
+    </div>
+</div>
+
+<%- include('footer') -%>
