@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/gbernhard44100/dashboardCegefos#readme",
   "dependencies": {
+    "JSONStream": "^1.3.5",
     "bootstrap": "^5.1.3",
     "dotenv": "^16.0.0",
     "ejs": "^3.1.7",

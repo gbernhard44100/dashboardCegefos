@@ -1,0 +1,7 @@
+{ 
+    "currencies": {
+        "usd": { "rate": 1, "decimals": 2 },
+        "euro": { "rate": 0.95, "decimals": 2 },
+        "yen": { "rate": 130.13, "decimals": 0 } 
+    }
+}

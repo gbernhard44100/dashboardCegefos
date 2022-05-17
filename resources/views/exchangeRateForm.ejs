@@ -4,34 +4,48 @@
     <div>
       <h1>Convertisseur de devises</h1>
       <form action="/convertirDevises" method="POST">
+        <fieldset>
           <div class="mb-3">
-            <label for="usdAmount" class="form-label">Somme en &dollar; :</label>
-            <input type="number" step=".01" id="usdAmount" name="usdAmount" class="form-control" placeholder="0" 
-              <% if(parsedBody.usdAmount) { %>
-                value="<%= parsedBody.usdAmount %>"
+            <label for="usd" class="form-label">Somme en &dollar; :</label>
+            <input type="number" step=".01" id="usd" name="usd" class="form-control" placeholder="0" onchange="prepareRateRequestBeforeSubmit(this)"
+              <% if (exchangeAmounts.usd) { %>
+                value="<%= exchangeAmounts.usd %>"
+              <% } else if (parsedBody.usd) { %>
+                value="<%= parsedBody.usd %>"
               <% } %>
             >
           </div>
           <div class="mb-3">
-            <label for="euroAmount" class="form-label">Somme en &euro; :</label>
-            <input type="number" step=".01" id="euroAmount" name="euroAmount" class="form-control" placeholder="0" 
-              <% if(parsedBody.euroAmount) { %>
-                value="<%= parsedBody.euroAmount %>"
+            <label for="euro" class="form-label">Somme en &euro; :</label>
+            <input type="number" step=".01" id="euro" name="euro" class="form-control" placeholder="0" onchange="prepareRateRequestBeforeSubmit(this)"
+              <% if (exchangeAmounts.euro) { %>
+                value="<%= exchangeAmounts.euro %>"
+              <% } else if (parsedBody.euro) { %>
+                value="<%= parsedBody.euro %>"
               <% } %>
             >
           </div>
           <div class="mb-3">
-            <label for="yenAmount" class="form-label">Somme en &yen; :</label>
-            <input type="number" id="yenAmount" name="yenAmount" class="form-control" placeholder="0" 
-              <% if(parsedBody.yenAmount) { %>
-                value="<%= parsedBody.yenAmount %>"
+            <label for="yen" class="form-label">Somme en &yen; :</label>
+            <input type="number" id="yen" name="yen" class="form-control" placeholder="0" onchange="prepareRateRequestBeforeSubmit(this)"
+              <% if (exchangeAmounts.yen) { %>
+                value="<%= exchangeAmounts.yen %>"
+              <% } else if (parsedBody.yen) { %>
+                value="<%= parsedBody.yen %>"
               <% } %>
             >
           </div>
-          <button type="submit" class="btn btn-primary">Convertir</button>
+          <input type="hidden" id="changedCurrency" name="changedCurrency" value="">
         </fieldset>
       </form>
     </div>
 </div>
-
+<script>
+  function prepareRateRequestBeforeSubmit(changedCurrency){
+    let changedCurrencyInput = document.getElementById('changedCurrency');
+    changedCurrencyInput.value = changedCurrency.name;
+    
+    changedCurrency.form.submit();
+  }
+</script>
 <%- include('footer') -%>
