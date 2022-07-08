@@ -32,6 +32,9 @@ async function handleHTTPRequest(req, res, body = undefined) {
   } else if (req.url === '/convertirDevises') {
     const convertisseurDevise = require('./lib/ConvertisseurDevise').convertisseurDevise;
     htmlContent = await convertisseurDevise.render(req, parsedBody);
+  } else if (req.url === '/inscription') {
+    const subscriber = require('./lib/Subscriber').subscriber;
+    htmlContent = await subscriber.render(req, parsedBody);
   } else {
     const accueil = require('./lib/Accueil');
     htmlContent = await accueil.view;
@@ -101,3 +104,5 @@ const server = http.createServer((req, res) => {
 server.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
+
+exports.server = server; // for testing
