@@ -11,10 +11,13 @@ async function parseBody(body) {
   }).catch(() => {
     // body request in from html form: "fullname=gg&height=180&weight=80"
     let parsedBody = {};
+
     if (body !== undefined) {
       String(body).split('&').map((data) => {
         let splittedData = data.split('=');
-        parsedBody[splittedData[0]] = splittedData[1].replace('+', ' ');
+        parsedBody[splittedData[0]] = splittedData[1].replace(/\+/g, ' ');
+        parsedBody[splittedData[0]] = parsedBody[splittedData[0]].replace(/%40/g, '@');
+        parsedBody[splittedData[0]] = parsedBody[splittedData[0]].replace(/%C3%AB/g, 'ë');
       });
     }
 
