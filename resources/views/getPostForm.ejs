@@ -1,0 +1,29 @@
+<%- include('header') -%>
+
+<div class="container">
+    <div>
+      <% if(typeof post !== "undefined") { %><h1>Modification du Post :</h1><% } else { %><h1>Nouveau Post :</h1><% } %>
+      <form action="/posts<% if(typeof post !== "undefined") { %>/update/<%= post.id %><% } %>" method="POST">
+          <div class="mb-3">
+            <label for="title" class="form-label">Titre du post :</label>
+            <input type="text" id="title" name="title" class="form-control" <% if(typeof post !== "undefined") { %>value="<%= post.title %>"<% } %> required>
+          </div>
+          <div class="mb-3">
+            <label for="content" class="form-label">Contenu du post :</label>
+            <textarea class="form-control" id="content" name="content" rows="10">
+              <% if(typeof post !== "undefined") {%> <%= post.content %> <% } %>
+            </textarea>
+        </div>
+          <button type="submit" class="btn btn-primary">
+            <% if(typeof post !== "undefined") { %>
+              Modifier
+            <% } else { %>
+              Publier
+            <% } %>
+          </button>
+        </fieldset>
+      </form>
+    </div>
+</div>
+
+<%- include('footer') -%>

@@ -1,111 +1,65 @@
 require('dotenv').config();
-const http = require('http');
-const fs = require('fs');
 
+const mongoose = require('mongoose');
+
+const express = require('express');
+// express middleware
+const bodyParser = require('body-parser');
+const expressSession = require('express-session');
+
+var MongoDBStore = require('connect-mongodb-session')(expressSession);
+
+const Router = require('./lib/routes/Router');
 const port = process.env.port;
 const hostname = process.env.hostname;
 
-async function parseBody(body) {
-  return new Promise((resolve) => {
-    resolve(JSON.parse(body));
-  }).catch(() => {
-    // body request in from html form: "fullname=gg&height=180&weight=80"
-    let parsedBody = {};
+connectDB().catch(err => console.log(err));
 
-    if (body !== undefined) {
-      String(body).split('&').map((data) => {
-        let splittedData = data.split('=');
-        parsedBody[splittedData[0]] = splittedData[1].replace(/\+/g, ' ');
-        parsedBody[splittedData[0]] = parsedBody[splittedData[0]].replace(/%40/g, '@');
-        parsedBody[splittedData[0]] = parsedBody[splittedData[0]].replace(/%C3%AB/g, 'ë');
-      });
-    }
+const app = express();
 
-    return parsedBody;
-  });
-}
-
-async function handleHTTPRequest(req, res, body = undefined) {
-  let htmlContent = '';
-  let parsedBody = await parseBody(body);
-
-  if (req.url === '/calculIMC') {
-    const calculIMC = require('./lib/CalculIMC').calculIMC;
-    htmlContent = await calculIMC.render(req, parsedBody);
-  } else if (req.url === '/convertirDevises') {
-    const convertisseurDevise = require('./lib/ConvertisseurDevise').convertisseurDevise;
-    htmlContent = await convertisseurDevise.render(req, parsedBody);
-  } else if (req.url === '/inscription') {
-    const subscriber = require('./lib/Subscriber').subscriber;
-    htmlContent = await subscriber.render(req, parsedBody);
-  } else {
-    const accueil = require('./lib/Accueil');
-    htmlContent = await accueil.view;
-  }
-
-  sendResponse(res, htmlContent);
-}
-
-async function sendResponse(res, htmlContent) {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/html');
-  res.write(htmlContent);
-  res.end();
-}
-
-function isFile(req) {
-  return req.url.split('.').length > 1;
-}
-
-function getFileType(req) {
-  let fileType = '';
-  let extension = req.url.split('.')[1];
-  if (['jpg', 'png'].find(value => value === extension.toLowerCase())) {
-    fileType = 'image/' + extension;
-  }
-
-  return fileType;
-}
-
-async function loadFile(req, res, statusCode) {
-  fs.readFile('.' + req.url, function(err, data) {
-    if(err) {
-        res.writeHead(500, { 'Content-Type' : 'text/plain' });
-        res.end('500 - Internal Error');
-    } else {
-        res.writeHead(statusCode, { 'Content-Type' : getFileType(req) });
-        res.end(data);
-    }
-  });
-}
-
-const server = http.createServer((req, res) => {
-  if(req.url === '/favicon.ico') {
-    loadFile(req, res, 204);
-  } else if(isFile(req)) {
-    if (req.url.includes('/resources/public')) {
-      loadFile(req, res, 200);
-    } else {
-      res.writeHead(403, { 'Content-Type' : 'text/plain' });
-      res.end('403 - Forbiden');
-    }
-  } else {
-    var body = '';
-    req.on('readable', function() {
-      if (req.method === 'GET') {
-        handleHTTPRequest(req, res);
-      } else if (req.method === 'POST') {
-        // http module handle the same request twice with no data to read in the second time.
-        while (null !== (body = req.read())) {
-          handleHTTPRequest(req, res, body);
-        }
-      }
-    });
-  }
+var sessionStorage = new MongoDBStore({
+  uri: process.env.dbhost,
+  collection: 'mySessions'
+});
+// Catch errors
+sessionStorage.on('error', function(error) {
+  console.log(error);
 });
 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
+// parse body in application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
 
-exports.server = server; // for testing
+// Access to public files
+app.use(express.static('public'));
+
+// Bootstrap css and js public access
+app.use(express.static(__dirname + '/node_modules/bootstrap/dist'));
+app.use('/posts/update', express.static(__dirname + '/node_modules/bootstrap/dist'));
+
+// renderer settings
+app.set('views', './resources/views');
+app.set('view engine', 'ejs');
+
+// Session
+app.use(expressSession({
+  secret: '812929f9dcf73bd20677e371185be1576d2086bc',
+  cookie: {
+    maxAge: 1000 * 60 * 15 // 15 minutes
+  },
+  resave: true,
+  store: sessionStorage,
+  saveUninitialized: false
+}));
+
+Router.defineRoutes(app);
+
+async function connectDB() {
+  await mongoose.connect(process.env.dbhost);
+}
+
+app.listen(port, () => 
+  console.log('server Express running in ' + hostname + ' on port ' + port)
+);
+
+exports.app = app; // for testing
+

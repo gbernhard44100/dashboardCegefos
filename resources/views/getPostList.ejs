@@ -1,0 +1,78 @@
+<%- include('header') -%>
+
+<h1>Posts</h1>
+<% for(const post of posts) {%>
+  <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+    <div class="col p-4 d-flex flex-column position-static">
+      <div class="row">
+        <div class="col">
+          <h3 class="mb-0"><%= post.title %></h3>
+        </div>
+        <div class="col">
+          <div class="col">
+            <% if(post.loveIts > 0) { %>
+              <h3><span class="badge bg-success">We love it!</span></h3>
+            <% } if(post.loveIts < 0) { %>
+              <h3><span class="badge bg-danger">We hate it!</span></h3>
+            <% } %>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="mb-1 text-muted">Créé le <%= post.created_date.toLocaleDateString("fr-FR") %> à <%= post.created_date.toLocaleTimeString("fr-FR") %></div>
+        </div>
+        <div class="col">
+          <div class="mb-1"><strong>Total loveIts: <%= post.loveIts %></strong></div>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <p class="card-text mb-auto"><%= post.content %></p>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-auto me-auto">
+          <a role="button" href="/posts/incrementLoveIts/<%= post.id %>" class="btn btn-outline-success">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"></path>
+            </svg>
+            Love it!
+          </a>
+          <a role="button" href="/posts/decrementLoveIts/<%= post.id %>" class="btn btn-outline-danger">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"></path>
+            </svg>
+            Don't Like it!
+          </a>
+        </div>
+        <div class="col-auto">
+          <a role="button" href="/posts/update/<%= post.id %>" class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
+              <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z"></path>
+            </svg>
+            Modifier
+          </a>
+        </div>
+        <div class="col">
+          <form class="form-events" action="/posts/delete/<%= post.id %>" method="get">
+            <button type="submit" class="btn btn-secondary">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
+                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
+              </svg>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+<% } %>
+
+<script>
+  function redirectToPostUpdate(postId) {
+    location.replace("/posts/update/" + postId)
+  }
+  </script>
+
+<%- include('footer') -%>
